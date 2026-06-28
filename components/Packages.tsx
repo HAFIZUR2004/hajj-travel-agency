@@ -11,6 +11,7 @@ import {
   Package,
   Users
 } from "lucide-react";
+import Link from "next/link";
 
 const packages = [
   {
@@ -110,7 +111,10 @@ const packages = [
 export default function Packages() {
   const [active, setActive] = useState<'all' | 'hajj' | 'umrah'>('all');
 
-  const filtered = active === 'all' ? packages : packages.filter(p => p.type === active);
+  // ফিল্টার করার পর শুধু প্রথম ৩টি প্যাকেজ দেখাবে
+  const filtered = active === 'all' 
+    ? packages.slice(0, 3) 
+    : packages.filter(p => p.type === active).slice(0, 3);
 
   return (
     <section id="packages" className="py-20 bg-gradient-to-b from-[#FBF8F0] to-white">
@@ -134,7 +138,7 @@ export default function Packages() {
           </p>
         </div>
 
-        {/* Filter Tabs - No Emoji */}
+        {/* Filter Tabs */}
         <div className="flex justify-center gap-3 mb-12 flex-wrap">
           {[
             { key: 'all', label: 'সব প্যাকেজ', icon: <Package size={16} /> },
@@ -160,15 +164,17 @@ export default function Packages() {
           ))}
         </div>
 
-        {/* Package Cards */}
+        {/* Package Cards - শুধু ৩টি দেখাবে */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map(pkg => (
             <div 
               key={pkg.id} 
               className={`group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative ${pkg.popular ? 'ring-2' : ''}`} 
-              style={pkg.popular ? {ringColor: pkg.color, boxShadow: `0 10px 40px ${pkg.color}20`} : {}}
+              style={pkg.popular ? { 
+                boxShadow: `0 10px 40px ${pkg.color}20` // ✅ শুধুমাত্র boxShadow
+              } : {}}
             >
-              {/* Badge - আইকন বাদ দেওয়া হয়েছে, শুধু টেক্সট */}
+              {/* Badge */}
               <div className="absolute top-4 right-4 z-10 px-3.5 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-sm shadow-lg" 
                    style={{background: `linear-gradient(135deg, ${pkg.popular ? pkg.color : pkg.badgeColor}, ${pkg.popular ? pkg.color + 'CC' : pkg.badgeColor + 'CC'})`}}>
                 {pkg.popular ? 'সেরা পছন্দ' : pkg.badge}
@@ -240,9 +246,10 @@ export default function Packages() {
           ))}
         </div>
 
-        {/* View All Button */}
+        {/* View All Button - Hajj Packages পেজে যাবে */}
         <div className="text-center mt-12">
-          <button 
+          <Link 
+            href="/hajj-packages"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:shadow-xl hover:scale-105" 
             style={{
               background: 'linear-gradient(135deg, #0B4D2E, #2E9B5A)',
@@ -252,9 +259,10 @@ export default function Packages() {
           >
             সকল প্যাকেজ দেখুন
             <ArrowRight size={16} />
-          </button>
+          </Link>
         </div>
       </div>
     </section>
   );
 }
+// kkkk
